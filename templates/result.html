@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Classification Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/result.css') }}">
+    <style>
+        /* Additional styles for tooltips */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: auto;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            padding: 5px;
+            border-radius: 6px;
+            position: absolute;
+            z-index: 1;
+            bottom: 150%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h1>Universidad Nacional de Ingeniería</h1>
+</header>
+<div class="container">
+    <h1>Clasificación</h1>
+    <div class="gallery">
+        {% for filename, img_str, classification, probability, percent in results %}
+            <div class="card">
+                <img src="{{ img_str }}" alt="Image" width="100">
+                <p>
+                    <strong>Imagen:</strong>
+                    <span class="tooltip">{{ filename[:10] }}{% if filename|length > 10 %}...<span class="tooltiptext">{{ filename }}</span>{% endif %}</span>
+                </p>
+                <p><strong>Clase:</strong> {{ classification }}</p>
+                <p><strong>Confianza:</strong> <span {% if probability == 'Alta' %}class="green"{% elif probability == 'Media' %}class="yellow"{% else %}class="red"{% endif %}>{{ probability }}</span> ({{ percent }})</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+<footer>
+    <p>&copy; 2024 Juan Antonio Pérez Escorcia</p>
+</footer>
+</body>
+</html>

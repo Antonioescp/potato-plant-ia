@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Upload and Preview Images</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/index.css') }}">
+    <style>
+        /* Circular progress indicator */
+        .loader-overlay {
+            display: flex;
+            justify-content: center;
+            align-content: center;
+            flex-flow: row wrap;
+            visibility: collapse;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.3); /* Semi-transparent black background */
+            z-index: 1000; /* Ensure it's above other content */
+            text-align: center;
+        }
+
+        .loader {
+            border: 15px solid white;
+            border-left-color: #3498db;
+            border-radius: 50%;
+            width: 100px;
+            height: 100px;
+            animation: spin 1s linear infinite, expand 3s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes expand {
+            0% {
+                border: 15px solid white;
+                border-left-color: #3498db;
+            }
+            50% {
+                border: 35px solid white;
+                border-left-color: #3498db;
+            }
+            100% {
+                border: 15px solid white;
+                border-left-color: #3498db;
+            }
+        }
+    </style>
+    <script>
+        function onSubmit() {
+            showLoader()
+        }
+
+        function showLoader() {
+            document.getElementById('loader-overlay').style.visibility = 'visible';
+            document.getElementById('upload-btn').disabled = true;
+        }
+    </script>
+</head>
+<body>
+<header>
+    <h1>Universidad Nacional de Ingeniería</h1>
+</header>
+<div class="container">
+    <h1>Subir imágenes</h1>
+    <div class="loader-overlay" id="loader-overlay">
+        <div class="loader"></div>
+    </div>
+    <form id="uploadForm" method="post" enctype="multipart/form-data" onsubmit="onSubmit()">
+        <input type="file" id="uploadInput" name="files[]" multiple accept="image/*" onchange="previewImages(event)">
+        <input type="submit" id="upload-btn" value="Upload">
+    </form>
+    <div id="imagePreview"></div>
+</div>
+<footer>
+    <p>&copy; 2024 Juan Antonio Pérez Escorcia</p>
+</footer>
+<script>
+    function previewImages(event) {
+        var preview = document.getElementById('imagePreview');
+        preview.innerHTML = '';
+
+        var files = event.target.files;
+
+        for (var i = 0; i < files.length; i++) {
+            var file = files[i];
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var img = document.createElement('img');
+                img.src = e.target.result;
+                img.style.maxWidth = '100px';
+                img.style.margin = '10px';
+                preview.appendChild(img);
+            };
+
+            reader.readAsDataURL(file);
+        }
+    }
+</script>
+</body>
+</html>
