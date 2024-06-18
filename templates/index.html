@@ -55,12 +55,42 @@
     </style>
     <script>
         function onSubmit() {
-            showLoader()
+            showLoader();
         }
 
         function showLoader() {
             document.getElementById('loader-overlay').style.visibility = 'visible';
             document.getElementById('upload-btn').disabled = true;
+        }
+
+        function previewImages(event) {
+            var preview = document.getElementById('imagePreview');
+            preview.innerHTML = '';
+
+            var files = event.target.files;
+
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                var reader = new FileReader();
+
+                reader.onload = function (e) {
+                    var img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.style.maxWidth = '100px';
+                    img.style.margin = '10px';
+                    preview.appendChild(img);
+                };
+
+                reader.readAsDataURL(file);
+            }
+
+            // Enable the upload button if files are selected
+            document.getElementById('upload-btn').disabled = files.length === 0;
+        }
+
+        window.onload = function() {
+            document.getElementById('upload-btn').disabled = true; // Disable on load
+            document.getElementById('uploadInput').addEventListener('change', previewImages);
         }
     </script>
 </head>
@@ -74,36 +104,13 @@
         <div class="loader"></div>
     </div>
     <form id="uploadForm" method="post" enctype="multipart/form-data" onsubmit="onSubmit()">
-        <input type="file" id="uploadInput" name="files[]" multiple accept="image/*" onchange="previewImages(event)">
+        <input type="file" id="uploadInput" name="files[]" multiple accept="image/*">
         <input type="submit" id="upload-btn" value="Upload">
     </form>
     <div id="imagePreview"></div>
 </div>
 <footer>
-    <p>&copy; 2024 Juan Antonio Pérez Escorcia</p>
+    <p>&copy; 2024 Juan Antonio Pérez Escorcia y Kirsten Allison Cardenas Lopez</p>
 </footer>
-<script>
-    function previewImages(event) {
-        var preview = document.getElementById('imagePreview');
-        preview.innerHTML = '';
-
-        var files = event.target.files;
-
-        for (var i = 0; i < files.length; i++) {
-            var file = files[i];
-            var reader = new FileReader();
-
-            reader.onload = function (e) {
-                var img = document.createElement('img');
-                img.src = e.target.result;
-                img.style.maxWidth = '100px';
-                img.style.margin = '10px';
-                preview.appendChild(img);
-            };
-
-            reader.readAsDataURL(file);
-        }
-    }
-</script>
 </body>
 </html>
